@@ -22,6 +22,8 @@ import { QuotationsListPage } from '@/modules/quotations/pages/QuotationsListPag
 import { QuotationNewPage } from '@/modules/quotations/pages/QuotationNewPage'
 import { OrdersListPage } from '@/modules/orders/pages/OrdersListPage'
 import { OrderDetailPage } from '@/modules/orders/pages/OrderDetailPage'
+import { WmsInventoryPage } from '@/modules/wms/pages/WmsInventoryPage'
+import { WmsReceiptsPage } from '@/modules/wms/pages/WmsReceiptsPage'
 
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -110,8 +112,8 @@ const router = createBrowserRouter([
         children: [
           { path: '/tos/yard/:id', element: <ComingSoonPage title="Mapa del Patio TOS" /> },
           { path: '/tos/gate', element: <ComingSoonPage title="Control de Garita" /> },
-          { path: '/wms/inventory', element: <ComingSoonPage title="Inventario WMS" /> },
-          { path: '/wms/receipts', element: <ComingSoonPage title="Recepciones WMS" /> },
+          { path: '/wms/inventory', element: <WmsInventoryPage /> },
+          { path: '/wms/receipts', element: <WmsReceiptsPage /> },
           { path: '/agd/certificates', element: <ComingSoonPage title="Certificados de Depósito" /> },
         ],
       },
