@@ -1,0 +1,266 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter/wght.css";
+
+/* ============================================================
+   DESIGN SYSTEM — Marketplace Logístico Antigravity
+   Basado en: DESIGN.md (estilo Fiverr)
+   ============================================================ */
+
+@theme {
+  /* ── Colors ── */
+  --color-fiverr-green: #1dbf73;
+  --color-deep-moss: #003912;
+  --color-graphite: #222325;
+  --color-cloud-white: #ffffff;
+  --color-slate-gray: #62646a;
+  --color-pebble-gray: #c5c6c9;
+  --color-ash-gray: #dadbdd;
+  --color-warm-gray: #404145;
+  --color-cool-gray: #74767e;
+
+  /* Semantic aliases */
+  --color-brand: #1dbf73;
+  --color-brand-dark: #003912;
+  --color-text-primary: #222325;
+  --color-text-secondary: #62646a;
+  --color-text-muted: #74767e;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #dadbdd;
+  --color-border: #dadbdd;
+
+  /* ── Typography ── */
+  --font-macan: "Inter Variable", ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, Consolas, "Cascadia Code", monospace;
+
+  /* Type Scale */
+  --text-caption: 10px;
+  --text-body-sm: 14px;
+  --text-body: 16px;
+  --text-subheading: 18px;
+  --text-heading: 48px;
+  --text-display: 72px;
+
+  /* Line heights */
+  --leading-caption: 1.5;
+  --leading-body-sm: 1.5;
+  --leading-body: 1.5;
+  --leading-subheading: 1.57;
+  --leading-heading: 1.05;
+  --leading-display: 1;
+
+  /* Letter spacing */
+  --tracking-heading: -0.48px;
+  --tracking-display: -0.48px;
+
+  /* Font weights */
+  --font-weight-w280: 280;
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ── Spacing (base unit: 4px) ── */
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-7: 28px;
+  --spacing-8: 32px;
+  --spacing-10: 40px;
+  --spacing-14: 56px;
+
+  /* ── Layout ── */
+  --page-max-width: 1200px;
+  --section-gap: 40px;
+  --card-padding: 12px;
+  --element-gap: 12px;
+
+  /* ── Border Radius ── */
+  --radius-none: 0px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Named roles */
+  --radius-tags: 9999px;
+  --radius-cards: 16px;
+  --radius-inputs: 12px;
+  --radius-buttons: 8px;
+  --radius-navigation: 4px;
+
+  /* ── Shadows ── */
+  --shadow-card: rgba(0, 0, 0, 0.13) 0px 3px 10px 0px;
+  --shadow-md: rgba(0, 0, 0, 0.13) 0px 3px 10px 0px;
+
+  /* ── Surfaces ── */
+  --surface-page: #ffffff;
+  --surface-subtle: #dadbdd;
+  --surface-hero: #003912;
+}
+
+/* ============================================================
+   BASE RESET & GLOBALS
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-macan);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--color-graphite);
+  background-color: var(--color-cloud-white);
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   TYPOGRAPHY UTILITIES
+   ============================================================ */
+
+.text-display {
+  font-size: var(--text-display);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  font-weight: var(--font-weight-bold);
+}
+
+.text-heading {
+  font-size: var(--text-heading);
+  line-height: var(--leading-heading);
+  letter-spacing: var(--tracking-heading);
+  font-weight: var(--font-weight-bold);
+}
+
+.text-subheading {
+  font-size: var(--text-subheading);
+  line-height: var(--leading-subheading);
+  font-weight: var(--font-weight-semibold);
+}
+
+.text-body {
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}
+
+.text-body-sm {
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-body-sm);
+}
+
+.text-caption {
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+}
+
+/* ============================================================
+   COMPONENT TOKENS (CSS variables for Shadcn compatibility)
+   ============================================================ */
+
+:root {
+  /* Shadcn-compatible tokens */
+  --background: 0 0% 100%;
+  --foreground: 210 6% 13%;
+  --card: 0 0% 100%;
+  --card-foreground: 210 6% 13%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 210 6% 13%;
+  --primary: 148 73% 43%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 5% 86%;
+  --secondary-foreground: 210 6% 13%;
+  --muted: 210 5% 86%;
+  --muted-foreground: 218 4% 43%;
+  --accent: 148 73% 43%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 210 5% 86%;
+  --input: 210 5% 86%;
+  --ring: 148 73% 43%;
+  --radius: 0.5rem;
+
+  /* Status colors */
+  --color-success: #1dbf73;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+}
+
+/* ============================================================
+   SCROLLBAR (webkit)
+   ============================================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-ash-gray);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-pebble-gray);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-slate-gray);
+}
+
+/* ============================================================
+   FOCUS RING (accessible)
+   ============================================================ */
+
+:focus-visible {
+  outline: 2px solid var(--color-fiverr-green);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ============================================================
+   LINK BASE
+   ============================================================ */
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ============================================================
+   PAGE LAYOUT UTILITIES
+   ============================================================ */
+
+.page-container {
+  width: 100%;
+  max-width: var(--page-max-width);
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+.section-gap {
+  margin-block-end: var(--section-gap);
+}

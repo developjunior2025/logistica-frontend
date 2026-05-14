@@ -1,0 +1,154 @@
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+
+// Layouts
+import { AppLayout } from '@/modules/shared/components/layout/AppLayout'
+import { AuthLayout } from '@/modules/shared/components/layout/AuthLayout'
+import { ProtectedRoute } from '@/modules/shared/components/common/ProtectedRoute'
+
+// Public pages
+import { MarketplacePage } from '@/modules/marketplace/pages/MarketplacePage'
+import { SearchResultsPage } from '@/modules/marketplace/pages/SearchResultsPage'
+import { StoreDetailPage } from '@/modules/marketplace/pages/StoreDetailPage'
+
+// Auth pages
+import { LoginPage } from '@/modules/auth/pages/LoginPage'
+import { RegisterPage } from '@/modules/auth/pages/RegisterPage'
+import { ForgotPasswordPage } from '@/modules/auth/pages/ForgotPasswordPage'
+
+// Protected pages (placeholders — se implementan en sprints siguientes)
+import { DashboardPage } from '@/modules/dashboard/pages/DashboardPage'
+import { ComingSoonPage } from '@/modules/shared/pages/ComingSoonPage'
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+const router = createBrowserRouter([
+  // ── Rutas públicas con AppLayout ─────────────────────────────────────────
+  {
+    element: <AppLayout />,
+    children: [
+      { path: '/', element: <MarketplacePage /> },
+      { path: '/search', element: <SearchResultsPage /> },
+      { path: '/stores/:id', element: <StoreDetailPage /> },
+      { path: '/stores/:id/services/:serviceId', element: <ComingSoonPage title="Detalle del Servicio" /> },
+    ],
+  },
+
+  // ── Rutas de autenticación ───────────────────────────────────────────────
+  {
+    element: <AuthLayout />,
+    children: [
+      { path: '/auth/login', element: <LoginPage /> },
+      { path: '/auth/register', element: <RegisterPage /> },
+      { path: '/auth/forgot-password', element: <ForgotPasswordPage /> },
+      { path: '/auth/reset-password', element: <ComingSoonPage title="Restablecer contraseña" /> },
+    ],
+  },
+
+  // ── Rutas protegidas (solo autenticados) ─────────────────────────────────
+  {
+    element: <ProtectedRoute />,
+    children: [
+      {
+        element: <AppLayout />,
+        children: [
+          { path: '/dashboard', element: <DashboardPage /> },
+          { path: '/quotations', element: <ComingSoonPage title="Mis Cotizaciones" /> },
+          { path: '/quotations/:id', element: <ComingSoonPage title="Detalle de Cotización" /> },
+          { path: '/orders', element: <ComingSoonPage title="Mis Órdenes" /> },
+          { path: '/orders/:id', element: <ComingSoonPage title="Detalle de Orden" /> },
+          { path: '/reports', element: <ComingSoonPage title="Reportes" /> },
+          { path: '/support', element: <ComingSoonPage title="Soporte" /> },
+          { path: '/support/tickets/:id', element: <ComingSoonPage title="Ticket de Soporte" /> },
+        ],
+      },
+    ],
+  },
+
+  // ── Rutas de Tienda (requiere rol PROF-TIE-002) ──────────────────────────
+  {
+    element: <ProtectedRoute allowedRoles={['PROF-TIE-002', 'PROF-SUP-003']} />,
+    children: [
+      {
+        element: <AppLayout />,
+        children: [
+          { path: '/store/setup', element: <ComingSoonPage title="Registro de Tienda" /> },
+          { path: '/store/profile', element: <ComingSoonPage title="Mi Tienda" /> },
+          { path: '/store/services', element: <ComingSoonPage title="Mis Servicios" /> },
+          { path: '/store/quotations', element: <ComingSoonPage title="Cotizaciones Recibidas" /> },
+        ],
+      },
+    ],
+  },
+
+  // ── Rutas Admin (requiere rol PROF-SUP-003) ──────────────────────────────
+  {
+    element: <ProtectedRoute allowedRoles={['PROF-SUP-003']} />,
+    children: [
+      {
+        element: <AppLayout />,
+        children: [
+          { path: '/admin/stores', element: <ComingSoonPage title="Gestión de Tiendas" /> },
+          { path: '/admin/catalogs', element: <ComingSoonPage title="Catálogos" /> },
+          { path: '/admin/commissions', element: <ComingSoonPage title="Comisiones" /> },
+          { path: '/admin/audit', element: <ComingSoonPage title="Auditoría" /> },
+        ],
+      },
+    ],
+  },
+
+  // ── Módulos Operativos (Operador + Admin) ────────────────────────────────
+  {
+    element: <ProtectedRoute allowedRoles={['PROF-OPE-004', 'PROF-SUP-003']} />,
+    children: [
+      {
+        element: <AppLayout />,
+        children: [
+          { path: '/tos/yard/:id', element: <ComingSoonPage title="Mapa del Patio TOS" /> },
+          { path: '/tos/gate', element: <ComingSoonPage title="Control de Garita" /> },
+          { path: '/wms/inventory', element: <ComingSoonPage title="Inventario WMS" /> },
+          { path: '/wms/receipts', element: <ComingSoonPage title="Recepciones WMS" /> },
+          { path: '/agd/certificates', element: <ComingSoonPage title="Certificados de Depósito" /> },
+        ],
+      },
+    ],
+  },
+
+  // ── Transportista ────────────────────────────────────────────────────────
+  {
+    element: <ProtectedRoute allowedRoles={['PROF-TRP-006', 'PROF-OPE-004', 'PROF-SUP-003']} />,
+    children: [
+      {
+        element: <AppLayout />,
+        children: [
+          { path: '/transport/trips', element: <ComingSoonPage title="Mis Viajes" /> },
+        ],
+      },
+    ],
+  },
+
+  // ── Inspector ────────────────────────────────────────────────────────────
+  {
+    element: <ProtectedRoute allowedRoles={['PROF-INS-005', 'PROF-OPE-004', 'PROF-SUP-003']} />,
+    children: [
+      {
+        element: <AppLayout />,
+        children: [
+          { path: '/inspections', element: <ComingSoonPage title="Inspecciones" /> },
+        ],
+      },
+    ],
+  },
+
+  // ── 404 ──────────────────────────────────────────────────────────────────
+  {
+    path: '*',
+    element: <AppLayout />,
+    children: [
+      { index: true, element: <ComingSoonPage title="Página no encontrada" /> },
+    ],
+  },
+])
+
+export function AppRouter() {
+  return <RouterProvider router={router} />
+}
