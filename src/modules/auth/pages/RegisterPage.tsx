@@ -1,161 +1,83 @@
-import { Link } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { useMutation } from '@tanstack/react-query'
-import api from '@/modules/shared/services/api'
-
-// ── Schema ─────────────────────────────────────────────────────────────────
-
-const registerSchema = z
-  .object({
-    name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
-    email: z.string().email('Correo electrónico inválido'),
-    password: z
-      .string()
-      .min(8, 'La contraseña debe tener al menos 8 caracteres')
-      .regex(/[A-Z]/, 'Debe incluir al menos una mayúscula')
-      .regex(/[0-9]/, 'Debe incluir al menos un número'),
-    confirmPassword: z.string(),
-  })
-  .refine((d) => d.password === d.confirmPassword, {
-    message: 'Las contraseñas no coinciden',
-    path: ['confirmPassword'],
-  })
-
-type TRegisterForm = z.infer<typeof registerSchema>
-
-// ─────────────────────────────────────────────────────────────────────────────
+import { RegisterForm } from '../components/RegisterForm';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Ship, Link as LinkIcon } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export function RegisterPage() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<TRegisterForm>({
-    resolver: zodResolver(registerSchema),
-  })
-
-  const { mutate, isPending, isError, isSuccess } = useMutation({
-    mutationFn: async (data: TRegisterForm) => {
-      const { confirmPassword: _cp, ...body } = data
-      await api.post('/auth/register', body)
-    },
-  })
-
-  const onSubmit = (data: TRegisterForm) => mutate(data)
-
-  if (isSuccess) {
-    return (
-      <div className="auth-form auth-form--success">
-        <div className="auth-success__icon" aria-hidden="true">✅</div>
-        <h1 className="auth-form__title">¡Cuenta creada!</h1>
-        <p className="auth-form__subtitle">
-          Revisa tu correo para confirmar tu cuenta y luego inicia sesión.
-        </p>
-        <Link to="/auth/login" className="auth-form__submit-btn" style={{ textAlign: 'center', display: 'block' }}>
-          Ir al login
-        </Link>
-      </div>
-    )
-  }
-
   return (
-    <div className="auth-form">
-      <div className="auth-form__header">
-        <h1 className="auth-form__title">Crear cuenta</h1>
-        <p className="auth-form__subtitle">Es gratis. Únete al marketplace logístico.</p>
+    <div className="min-h-screen grid lg:grid-cols-2">
+      {/* Form Side */}
+      <div className="flex flex-col justify-center p-8 lg:p-14 bg-slate-50 order-2 lg:order-1">
+        <div className="mx-auto w-full max-w-md space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          
+          <div className="flex items-center gap-3 font-bold text-xl tracking-tight lg:hidden">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
+              <Ship className="h-5 w-5 text-white" />
+            </div>
+            Marketplace
+          </div>
+
+          <Card className="border-slate-200/60 shadow-xl shadow-slate-200/40 bg-white/80 backdrop-blur-xl">
+            <CardHeader className="space-y-2 pb-6">
+              <CardTitle className="text-2xl font-bold tracking-tight text-slate-900">
+                Crea tu cuenta
+              </CardTitle>
+              <CardDescription className="text-slate-500 text-base">
+                Únete a la red logística más grande de la región y digitaliza tus operaciones.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <RegisterForm />
+              
+              <div className="mt-8 text-center text-sm text-slate-500">
+                ¿Ya tienes una cuenta?{' '}
+                <Link to="/auth/login" className="font-semibold text-blue-600 hover:text-blue-500 hover:underline transition-all">
+                  Inicia sesión aquí
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <p className="text-center text-sm text-slate-400">
+            Al registrarte, aceptas nuestros <a href="#" className="underline hover:text-slate-600">Términos de Servicio</a> y <a href="#" className="underline hover:text-slate-600">Política de Privacidad</a>.
+          </p>
+        </div>
       </div>
 
-      <form
-        id="register-form"
-        className="auth-form__form"
-        onSubmit={handleSubmit(onSubmit)}
-        noValidate
-      >
-        {isError && (
-          <div className="auth-form__server-error" role="alert">
-            Este correo ya está registrado o hubo un error. Intenta de nuevo.
+      {/* Visual / Branding Side */}
+      <div className="relative hidden lg:flex flex-col justify-between bg-slate-900 p-12 text-white overflow-hidden order-1 lg:order-2">
+        {/* Background Decorative Elements */}
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1586528116311-ad8ed7c83a7f?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-30 mix-blend-overlay"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent"></div>
+        
+        {/* Glassmorphism Accents */}
+        <div className="absolute bottom-[-10%] left-[-10%] w-96 h-96 bg-indigo-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-50 animate-pulse"></div>
+        <div className="absolute top-[-10%] right-[-10%] w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-[128px] opacity-50 animate-pulse delay-700"></div>
+
+        <div className="relative z-10 flex justify-end">
+          <div className="flex items-center gap-3 font-bold text-2xl tracking-tight">
+            Marketplace Logístico
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 shadow-lg shadow-blue-500/30">
+              <Ship className="h-6 w-6 text-white" />
+            </div>
           </div>
-        )}
-
-        <div className="form-field">
-          <label htmlFor="reg-name" className="form-field__label">Nombre completo</label>
-          <input
-            id="reg-name"
-            type="text"
-            className={['form-field__input', errors.name ? 'form-field__input--error' : ''].join(' ')}
-            placeholder="Juan Pérez"
-            autoComplete="name"
-            {...register('name')}
-          />
-          {errors.name && <p className="form-field__error" role="alert">{errors.name.message}</p>}
         </div>
-
-        <div className="form-field">
-          <label htmlFor="reg-email" className="form-field__label">Correo electrónico</label>
-          <input
-            id="reg-email"
-            type="email"
-            className={['form-field__input', errors.email ? 'form-field__input--error' : ''].join(' ')}
-            placeholder="tu@correo.com"
-            autoComplete="email"
-            {...register('email')}
-          />
-          {errors.email && <p className="form-field__error" role="alert">{errors.email.message}</p>}
+        
+        <div className="relative z-10 space-y-6 max-w-lg self-end text-right">
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
+            Expande tu alcance marítimo y terrestre.
+          </h1>
+          <p className="text-slate-300 text-lg leading-relaxed">
+            Publica tus servicios, recibe cotizaciones y administra despachos aduaneros desde un solo lugar.
+          </p>
+          <div className="flex items-center justify-end gap-4 pt-4">
+            <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-full border border-slate-700/50">
+              <LinkIcon className="h-4 w-4 text-blue-400" />
+              <span className="text-sm font-medium text-slate-200">Integración nativa con WMS y TOS</span>
+            </div>
+          </div>
         </div>
-
-        <div className="form-field">
-          <label htmlFor="reg-password" className="form-field__label">Contraseña</label>
-          <input
-            id="reg-password"
-            type="password"
-            className={['form-field__input', errors.password ? 'form-field__input--error' : ''].join(' ')}
-            placeholder="Mínimo 8 caracteres"
-            autoComplete="new-password"
-            {...register('password')}
-          />
-          {errors.password && <p className="form-field__error" role="alert">{errors.password.message}</p>}
-        </div>
-
-        <div className="form-field">
-          <label htmlFor="reg-confirm" className="form-field__label">Confirmar contraseña</label>
-          <input
-            id="reg-confirm"
-            type="password"
-            className={['form-field__input', errors.confirmPassword ? 'form-field__input--error' : ''].join(' ')}
-            placeholder="Repite tu contraseña"
-            autoComplete="new-password"
-            {...register('confirmPassword')}
-          />
-          {errors.confirmPassword && (
-            <p className="form-field__error" role="alert">{errors.confirmPassword.message}</p>
-          )}
-        </div>
-
-        <p className="auth-form__terms">
-          Al registrarte aceptas los{' '}
-          <Link to="/terms" className="auth-form__switch-link">Términos de uso</Link>{' '}
-          y la{' '}
-          <Link to="/privacy" className="auth-form__switch-link">Política de privacidad</Link>.
-        </p>
-
-        <button
-          id="register-submit-btn"
-          type="submit"
-          className="auth-form__submit-btn"
-          disabled={isPending}
-          aria-busy={isPending}
-        >
-          {isPending && <span className="btn-spinner" aria-hidden="true" />}
-          {isPending ? 'Creando cuenta...' : 'Crear cuenta gratis'}
-        </button>
-      </form>
-
-      <p className="auth-form__switch">
-        ¿Ya tienes cuenta?{' '}
-        <Link to="/auth/login" className="auth-form__switch-link">Iniciar sesión</Link>
-      </p>
+      </div>
     </div>
-  )
+  );
 }

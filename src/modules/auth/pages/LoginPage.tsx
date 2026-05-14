@@ -1,6 +1,7 @@
 import { LoginForm } from '../components/LoginForm';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Ship } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export function LoginPage() {
   return (
@@ -74,9 +75,9 @@ export function LoginPage() {
               
               <div className="mt-8 text-center text-sm text-slate-500">
                 ¿No tienes una cuenta?{' '}
-                <a href="#" className="font-semibold text-blue-600 hover:text-blue-500 hover:underline transition-all">
+                <Link to="/auth/register" className="font-semibold text-blue-600 hover:text-blue-500 hover:underline transition-all">
                   Solicita acceso
-                </a>
+                </Link>
               </div>
             </CardContent>
           </Card>
