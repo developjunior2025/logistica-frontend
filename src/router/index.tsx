@@ -24,6 +24,8 @@ import { OrdersListPage } from '@/modules/orders/pages/OrdersListPage'
 import { OrderDetailPage } from '@/modules/orders/pages/OrderDetailPage'
 import { WmsInventoryPage } from '@/modules/wms/pages/WmsInventoryPage'
 import { WmsReceiptsPage } from '@/modules/wms/pages/WmsReceiptsPage'
+import { TosGatePage } from '@/modules/tos/pages/TosGatePage'
+import { TransportTripsPage } from '@/modules/transport/pages/TransportTripsPage'
 
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -111,7 +113,7 @@ const router = createBrowserRouter([
         element: <AppLayout />,
         children: [
           { path: '/tos/yard/:id', element: <ComingSoonPage title="Mapa del Patio TOS" /> },
-          { path: '/tos/gate', element: <ComingSoonPage title="Control de Garita" /> },
+          { path: '/tos/gate', element: <TosGatePage /> },
           { path: '/wms/inventory', element: <WmsInventoryPage /> },
           { path: '/wms/receipts', element: <WmsReceiptsPage /> },
           { path: '/agd/certificates', element: <ComingSoonPage title="Certificados de Depósito" /> },
@@ -127,7 +129,7 @@ const router = createBrowserRouter([
       {
         element: <AppLayout />,
         children: [
-          { path: '/transport/trips', element: <ComingSoonPage title="Mis Viajes" /> },
+          { path: '/transport/trips', element: <TransportTripsPage /> },
         ],
       },
     ],
