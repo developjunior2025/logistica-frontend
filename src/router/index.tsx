@@ -20,6 +20,8 @@ import { DashboardPage } from '@/modules/dashboard/pages/DashboardPage'
 import { ComingSoonPage } from '@/modules/shared/pages/ComingSoonPage'
 import { QuotationsListPage } from '@/modules/quotations/pages/QuotationsListPage'
 import { QuotationNewPage } from '@/modules/quotations/pages/QuotationNewPage'
+import { OrdersListPage } from '@/modules/orders/pages/OrdersListPage'
+import { OrderDetailPage } from '@/modules/orders/pages/OrderDetailPage'
 
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -57,8 +59,8 @@ const router = createBrowserRouter([
           { path: '/quotations', element: <QuotationsListPage /> },
           { path: '/quotations/new', element: <QuotationNewPage /> },
           { path: '/quotations/:id', element: <ComingSoonPage title="Detalle de Cotización" /> },
-          { path: '/orders', element: <ComingSoonPage title="Mis Órdenes" /> },
-          { path: '/orders/:id', element: <ComingSoonPage title="Detalle de Orden" /> },
+          { path: '/orders', element: <OrdersListPage /> },
+          { path: '/orders/:id', element: <OrderDetailPage /> },
           { path: '/reports', element: <ComingSoonPage title="Reportes" /> },
           { path: '/support', element: <ComingSoonPage title="Soporte" /> },
           { path: '/support/tickets/:id', element: <ComingSoonPage title="Ticket de Soporte" /> },
