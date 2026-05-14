@@ -1,260 +1,190 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState } from 'react';
+import { APIProvider, Map, AdvancedMarker, Pin } from '@vis.gl/react-google-maps';
+import { Search, Filter, MapPin } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import { StoreCard } from '../components/StoreCard';
+import type { IStoreMock } from '../components/StoreCard';
 
+// Dummy data for visual representation
+const mockStores: IStoreMock[] = [
+  {
+    id: 1,
+    name: 'Logística Portuaria Global',
+    description: 'Servicios de almacenamiento general y depósito aduanero con control de temperatura.',
+    rating: 4.8,
+    reviews: 124,
+    category: 'Almacén (WMS)',
+    location: 'Puerto de Veracruz',
+    image: 'https://images.unsplash.com/photo-1586528116311-ad8ed7c83a7f?q=80&w=800&auto=format&fit=crop',
+    verified: true,
+    lat: 19.2001,
+    lng: -96.1342,
+    priceFrom: 150.0,
+  },
+  {
+    id: 2,
+    name: 'TransCaribe Freight',
+    description: 'Transporte terrestre de carga pesada y sobredimensionada con trazabilidad GPS en tiempo real.',
+    rating: 4.5,
+    reviews: 89,
+    category: 'Transporte',
+    location: 'Puerto de Manzanillo',
+    image: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=800&auto=format&fit=crop',
+    verified: true,
+    lat: 19.0531,
+    lng: -104.3161,
+    priceFrom: 500.0,
+  },
+  {
+    id: 3,
+    name: 'Terminal Pacífico Este',
+    description: 'Patio de contenedores con capacidad para 5000 TEUs y servicio de consolidación.',
+    rating: 4.9,
+    reviews: 210,
+    category: 'Terminal (TOS)',
+    location: 'Puerto de Lázaro Cárdenas',
+    image: 'https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?q=80&w=800&auto=format&fit=crop',
+    verified: false,
+    lat: 17.9254,
+    lng: -102.1969,
+    priceFrom: 220.0,
+  },
+  {
+    id: 4,
+    name: 'Agencia Aduanal R&M',
+    description: 'Despacho aduanero, asesoría en comercio exterior y gestión de pedimentos rápidos.',
+    rating: 4.6,
+    reviews: 45,
+    category: 'Agencia Aduanal',
+    location: 'Puerto de Altamira',
+    image: 'https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=800&auto=format&fit=crop',
+    verified: true,
+    lat: 22.3922,
+    lng: -97.9048,
+    priceFrom: 350.0,
+  },
+];
 
-// Servicios destacados del homepage
-const FEATURED_SERVICES = [
-  'Almacenaje',
-  'Transporte',
-  'Aduana',
-  'Maniobras',
-  'Consolidación',
-  'Seguro de carga',
-]
-
-// Estadísticas del marketplace
-const STATS = [
-  { value: '500+', label: 'Tiendas activas' },
-  { value: '12', label: 'Puertos conectados' },
-  { value: '98%', label: 'Satisfacción' },
-  { value: '24h', label: 'Respuesta promedio' },
-]
-
-// ─────────────────────────────────────────────────────────────────────────────
+const categories = ['Todos', 'Almacén (WMS)', 'Transporte', 'Terminal (TOS)', 'Agencia Aduanal', 'Servicios Especiales'];
 
 export function MarketplacePage() {
-  const navigate = useNavigate()
-  const [query, setQuery] = useState('')
+  const [activeCategory, setActiveCategory] = useState('Todos');
+  const [hoveredStore, setHoveredStore] = useState<number | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    const params = new URLSearchParams()
-    if (query.trim()) params.set('query', query.trim())
-    navigate(`/search?${params.toString()}`)
-  }
+  const filteredStores = mockStores.filter(
+    (s) => activeCategory === 'Todos' || s.category === activeCategory
+  );
 
   return (
-    <div className="marketplace-home">
-      {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <section className="marketplace-hero" aria-labelledby="hero-headline">
-        <div className="marketplace-hero__overlay" aria-hidden="true" />
-        <div className="marketplace-hero__content page-container">
-          <div className="marketplace-hero__text">
-            <p className="marketplace-hero__eyebrow">Marketplace Logístico</p>
-            <h1 id="hero-headline" className="marketplace-hero__headline">
-              Conecta con las mejores
-              <span className="marketplace-hero__headline-accent"> operadoras portuarias</span>
-            </h1>
-            <p className="marketplace-hero__subline">
-              Busca, compara y cotiza servicios logísticos en los principales puertos
-              de México y Latinoamérica.
-            </p>
+    <div className="flex flex-col h-[calc(100vh-64px)] overflow-hidden bg-slate-50">
+      
+      {/* Dynamic Search & Filter Header */}
+      <div className="bg-white border-b border-slate-200 px-6 py-4 shadow-sm z-10 shrink-0">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-4 items-center justify-between">
+          <div className="relative w-full md:max-w-md shadow-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+            <Input 
+              placeholder="¿Qué servicio logístico buscas?" 
+              className="pl-10 h-12 rounded-full border-slate-300 bg-slate-100 hover:bg-slate-50 focus:bg-white transition-colors"
+            />
+          </div>
+          
+          <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
+            {categories.map(cat => (
+              <Badge 
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`cursor-pointer px-4 py-2 text-sm whitespace-nowrap rounded-full transition-all ${
+                  activeCategory === cat 
+                  ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-500/20' 
+                  : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                }`}
+              >
+                {cat}
+              </Badge>
+            ))}
+            <Separator orientation="vertical" className="h-8 mx-2 hidden md:block" />
+            <Button variant="outline" className="rounded-full gap-2 border-slate-300">
+              <Filter className="h-4 w-4" /> Filtros
+            </Button>
+          </div>
+        </div>
+      </div>
 
-            {/* Search form */}
-            <form
-              className="marketplace-hero__search"
-              onSubmit={handleSubmit}
-              role="search"
-              aria-label="Buscar tiendas logísticas"
+      {/* Main Content: Split View (Yelp/Airbnb Style) */}
+      <div className="flex-1 flex overflow-hidden relative">
+        
+        {/* Left Side: Store List */}
+        <div className="w-full lg:w-[55%] xl:w-[50%] h-full overflow-y-auto p-4 md:p-6 pb-24">
+          <div className="mb-6 flex justify-between items-end">
+            <div>
+              <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
+                {filteredStores.length} operadores encontrados
+              </h1>
+              <p className="text-slate-500 mt-1">Explora las mejores opciones para tu logística</p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 xl:grid-cols-1 gap-6">
+            {filteredStores.map((store) => (
+              <StoreCard 
+                key={store.id} 
+                store={store} 
+                onHover={setHoveredStore} 
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Right Side: Interactive Map */}
+        <div className="hidden lg:block lg:w-[45%] xl:w-[50%] h-full bg-slate-200 border-l border-slate-200 relative">
+          <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'dummy_key_for_dev'}>
+            <Map
+              defaultZoom={5}
+              defaultCenter={{ lat: 21.0, lng: -100.0 }}
+              mapId="marketplace_map_id"
+              disableDefaultUI={true}
+              className="w-full h-full"
             >
-              <div className="hero-search__input-wrap">
-                <svg
-                  className="hero-search__icon"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  aria-hidden="true"
-                >
-                  <circle cx="11" cy="11" r="8" />
-                  <path d="m21 21-4.35-4.35" />
-                </svg>
-                <input
-                  id="hero-search-input"
-                  type="search"
-                  className="hero-search__input"
-                  placeholder="Busca almacenaje, transporte, aduana..."
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  autoComplete="off"
-                  aria-label="Buscar servicios logísticos"
-                />
-              </div>
-              <button
-                type="submit"
-                id="hero-search-btn"
-                className="hero-search__btn"
-              >
-                Buscar
-              </button>
-            </form>
-
-            {/* Trending tags */}
-            <div className="marketplace-hero__trending" aria-label="Búsquedas populares">
-              <span className="trending__label">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1dbf73" strokeWidth="2.5" aria-hidden="true">
-                  <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-                  <polyline points="17 6 23 6 23 12" />
-                </svg>
-                Trending:
-              </span>
-              {FEATURED_SERVICES.map((service) => (
-                <button
-                  key={service}
-                  type="button"
-                  className="trending__tag"
-                  onClick={() => navigate(`/search?query=${encodeURIComponent(service)}`)}
-                >
-                  {service}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Hero decoration */}
-          <div className="marketplace-hero__visual" aria-hidden="true">
-            <div className="hero-visual__card hero-visual__card--1">
-              <div className="hero-visual__card-icon">🚢</div>
-              <p className="hero-visual__card-label">Almacenaje General</p>
-              <p className="hero-visual__card-meta">⭐ 4.9 · 120 reseñas</p>
-            </div>
-            <div className="hero-visual__card hero-visual__card--2">
-              <div className="hero-visual__card-icon">🏗️</div>
-              <p className="hero-visual__card-label">Maniobras de Patio</p>
-              <p className="hero-visual__card-meta">⭐ 4.7 · 89 reseñas</p>
-            </div>
-            <div className="hero-visual__card hero-visual__card--3">
-              <div className="hero-visual__card-icon">📦</div>
-              <p className="hero-visual__card-label">Despacho Aduanal</p>
-              <p className="hero-visual__card-meta">⭐ 4.8 · 204 reseñas</p>
-            </div>
-          </div>
+              {filteredStores.map((store) => {
+                const isHovered = hoveredStore === store.id;
+                return (
+                  <AdvancedMarker 
+                    key={store.id} 
+                    position={{ lat: store.lat, lng: store.lng }}
+                    zIndex={isHovered ? 100 : 1}
+                  >
+                    <div className={`
+                      transition-all duration-300 
+                      ${isHovered ? 'scale-125 -translate-y-2' : 'scale-100'}
+                    `}>
+                      <Pin 
+                        background={isHovered ? '#2563eb' : '#ffffff'} 
+                        borderColor={isHovered ? '#1d4ed8' : '#cbd5e1'} 
+                        glyphColor={isHovered ? '#ffffff' : '#334155'} 
+                      >
+                        {!isHovered && <MapPin className="h-4 w-4 text-slate-600" />}
+                      </Pin>
+                      {isHovered && (
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-slate-900 text-white text-xs font-bold px-2 py-1 rounded shadow-lg whitespace-nowrap z-50">
+                          ${store.priceFrom}
+                        </div>
+                      )}
+                    </div>
+                  </AdvancedMarker>
+                );
+              })}
+            </Map>
+          </APIProvider>
+          
+          {/* Decorative Map Gradient Overlay to blend edges */}
+          <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-slate-200/50 to-transparent pointer-events-none"></div>
         </div>
-      </section>
-
-      {/* ── STATS ────────────────────────────────────────────────────────── */}
-      <section className="marketplace-stats" aria-label="Estadísticas del marketplace">
-        <div className="page-container">
-          <div className="marketplace-stats__grid">
-            {STATS.map((stat) => (
-              <div key={stat.label} className="stat-item">
-                <p className="stat-item__value">{stat.value}</p>
-                <p className="stat-item__label">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── CATEGORÍAS ───────────────────────────────────────────────────── */}
-      <section className="marketplace-categories" aria-labelledby="categories-title">
-        <div className="page-container">
-          <h2 id="categories-title" className="section-title">
-            Servicios logísticos populares
-          </h2>
-          <div className="categories-grid">
-            {CATEGORY_CARDS.map((cat) => (
-              <button
-                key={cat.title}
-                type="button"
-                className="category-card"
-                onClick={() =>
-                  navigate(`/search?type=${cat.typeId}`)
-                }
-                aria-label={`Ver ${cat.title}`}
-              >
-                <div className="category-card__emoji" aria-hidden="true">
-                  {cat.emoji}
-                </div>
-                <div className="category-card__content">
-                  <h3 className="category-card__title">{cat.title}</h3>
-                  <p className="category-card__count">{cat.count} tiendas</p>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── HOW IT WORKS ─────────────────────────────────────────────────── */}
-      <section className="marketplace-how" aria-labelledby="how-title">
-        <div className="page-container">
-          <h2 id="how-title" className="section-title">
-            ¿Cómo funciona?
-          </h2>
-          <div className="how-steps">
-            {HOW_STEPS.map((step, i) => (
-              <div key={step.title} className="how-step">
-                <div className="how-step__number" aria-hidden="true">
-                  {i + 1}
-                </div>
-                <div className="how-step__icon" aria-hidden="true">{step.icon}</div>
-                <h3 className="how-step__title">{step.title}</h3>
-                <p className="how-step__desc">{step.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── CTA ──────────────────────────────────────────────────────────── */}
-      <section className="marketplace-cta" aria-labelledby="cta-title">
-        <div className="page-container">
-          <div className="marketplace-cta__inner">
-            <h2 id="cta-title" className="marketplace-cta__title">
-              ¿Tienes una operadora logística?
-            </h2>
-            <p className="marketplace-cta__desc">
-              Regístra tu tienda y llega a miles de importadores y exportadores
-              en los principales puertos del país.
-            </p>
-            <div className="marketplace-cta__actions">
-              <a href="/store/setup" id="cta-register-store" className="cta-btn cta-btn--primary">
-                Registrar mi empresa
-              </a>
-              <a href="/search" className="cta-btn cta-btn--ghost">
-                Explorar marketplace
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+        
+      </div>
     </div>
-  )
+  );
 }
-
-// ─── Data ─────────────────────────────────────────────────────────────────────
-
-const CATEGORY_CARDS = [
-  { emoji: '🏭', title: 'Almacenaje General', count: 124, typeId: 1 },
-  { emoji: '🚛', title: 'Transporte Terrestre', count: 98, typeId: 2 },
-  { emoji: '📋', title: 'Despacho Aduanal', count: 76, typeId: 3 },
-  { emoji: '🏗️', title: 'Maniobras Portuarias', count: 45, typeId: 4 },
-  { emoji: '📦', title: 'Consolidación de Carga', count: 38, typeId: 5 },
-  { emoji: '🔒', title: 'Seguro de Mercancía', count: 29, typeId: 6 },
-]
-
-const HOW_STEPS = [
-  {
-    icon: '🔍',
-    title: 'Busca y filtra',
-    desc: 'Encuentra tiendas logísticas por puerto, tipo de servicio, calificación y precio.',
-  },
-  {
-    icon: '💬',
-    title: 'Solicita cotización',
-    desc: 'Describe tu necesidad y recibe una propuesta detallada de la tienda en horas.',
-  },
-  {
-    icon: '✅',
-    title: 'Aprueba y opera',
-    desc: 'Acepta la cotización, realiza el pago y sigue el estado de tu operación en tiempo real.',
-  },
-  {
-    icon: '⭐',
-    title: 'Califica el servicio',
-    desc: 'Tu opinión ayuda a otros clientes a elegir los mejores proveedores.',
-  },
-]
