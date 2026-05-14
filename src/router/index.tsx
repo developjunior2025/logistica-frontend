@@ -26,6 +26,9 @@ import { WmsInventoryPage } from '@/modules/wms/pages/WmsInventoryPage'
 import { WmsReceiptsPage } from '@/modules/wms/pages/WmsReceiptsPage'
 import { TosGatePage } from '@/modules/tos/pages/TosGatePage'
 import { TransportTripsPage } from '@/modules/transport/pages/TransportTripsPage'
+import { SupportPage } from '@/modules/support/pages/SupportPage'
+import { SupportTicketPage } from '@/modules/support/pages/SupportTicketPage'
+import { AdminStoresPage } from '@/modules/admin/pages/AdminStoresPage'
 
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -66,8 +69,8 @@ const router = createBrowserRouter([
           { path: '/orders', element: <OrdersListPage /> },
           { path: '/orders/:id', element: <OrderDetailPage /> },
           { path: '/reports', element: <ComingSoonPage title="Reportes" /> },
-          { path: '/support', element: <ComingSoonPage title="Soporte" /> },
-          { path: '/support/tickets/:id', element: <ComingSoonPage title="Ticket de Soporte" /> },
+          { path: '/support', element: <SupportPage /> },
+          { path: '/support/tickets/:id', element: <SupportTicketPage /> },
         ],
       },
     ],
@@ -96,7 +99,7 @@ const router = createBrowserRouter([
       {
         element: <AppLayout />,
         children: [
-          { path: '/admin/stores', element: <ComingSoonPage title="Gestión de Tiendas" /> },
+          { path: '/admin/stores', element: <AdminStoresPage /> },
           { path: '/admin/catalogs', element: <ComingSoonPage title="Catálogos" /> },
           { path: '/admin/commissions', element: <ComingSoonPage title="Comisiones" /> },
           { path: '/admin/audit', element: <ComingSoonPage title="Auditoría" /> },
