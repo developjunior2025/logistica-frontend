@@ -18,6 +18,8 @@ import { ForgotPasswordPage } from '@/modules/auth/pages/ForgotPasswordPage'
 // Protected pages (placeholders — se implementan en sprints siguientes)
 import { DashboardPage } from '@/modules/dashboard/pages/DashboardPage'
 import { ComingSoonPage } from '@/modules/shared/pages/ComingSoonPage'
+import { QuotationsListPage } from '@/modules/quotations/pages/QuotationsListPage'
+import { QuotationNewPage } from '@/modules/quotations/pages/QuotationNewPage'
 
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -52,7 +54,8 @@ const router = createBrowserRouter([
         element: <AppLayout />,
         children: [
           { path: '/dashboard', element: <DashboardPage /> },
-          { path: '/quotations', element: <ComingSoonPage title="Mis Cotizaciones" /> },
+          { path: '/quotations', element: <QuotationsListPage /> },
+          { path: '/quotations/new', element: <QuotationNewPage /> },
           { path: '/quotations/:id', element: <ComingSoonPage title="Detalle de Cotización" /> },
           { path: '/orders', element: <ComingSoonPage title="Mis Órdenes" /> },
           { path: '/orders/:id', element: <ComingSoonPage title="Detalle de Orden" /> },
