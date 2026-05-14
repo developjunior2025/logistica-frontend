@@ -29,6 +29,7 @@ import { TransportTripsPage } from '@/modules/transport/pages/TransportTripsPage
 import { SupportPage } from '@/modules/support/pages/SupportPage'
 import { SupportTicketPage } from '@/modules/support/pages/SupportTicketPage'
 import { AdminStoresPage } from '@/modules/admin/pages/AdminStoresPage'
+import { ReportsPage } from '@/modules/reports/pages/ReportsPage'
 
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -68,7 +69,7 @@ const router = createBrowserRouter([
           { path: '/quotations/:id', element: <ComingSoonPage title="Detalle de Cotización" /> },
           { path: '/orders', element: <OrdersListPage /> },
           { path: '/orders/:id', element: <OrderDetailPage /> },
-          { path: '/reports', element: <ComingSoonPage title="Reportes" /> },
+          { path: '/reports', element: <ReportsPage /> },
           { path: '/support', element: <SupportPage /> },
           { path: '/support/tickets/:id', element: <SupportTicketPage /> },
         ],
